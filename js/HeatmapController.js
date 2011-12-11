@@ -1,6 +1,6 @@
 HeatmapController={
     init: function(){
-                       
+        var me=this;
         var zoomRelativeRates={
             1:1,
             2:2,
@@ -28,7 +28,7 @@ HeatmapController={
         // there is lots of work todo
         // but I don't have enough time for eg redrawing on dragrelease right now
         var myOptions = {
-            zoom: 2,
+            zoom: 14,
             center: myLatlng,
             mapTypeId: google.maps.MapTypeId.ROADMAP,
             disableDefaultUI: false,
@@ -43,25 +43,32 @@ HeatmapController={
         this.map = new google.maps.Map(document.getElementById("heatmapArea"), myOptions);
 	
         this.heatmapOverlay = new HeatmapOverlay(this.map, {
-            //"radius":45, 
+            "radius":2,
             "visible":true, 
             "opacity":60
         });
 
         $("#gen").click(function(){
-            var pos=HeatmapController.map.getCenter();
+            var currentBounds = HeatmapController.heatmapOverlay.map.getBounds();
+            var ne = currentBounds.getNorthEast();
+            var sw = currentBounds.getSouthWest();
+            var minLat=sw.Qa-50;
+            var minLng=sw.Ra-50;
+            var maxLat=ne.Qa+50;
+            var maxLng=ne.Ra+50;
 
-            var latOffset=180;
-            var lngOffset=180;
+            //            var latOffset=180;
+            //            var lngOffset=180;
+            var latOffset=(maxLat-minLat)+minLat;
+            var lngOffset=(maxLng-minLng)+minLng;
             var x = 5;
             while(x--){
 		
                 var lat = Math.random()*latOffset;
                 var lng = Math.random()*lngOffset;
-                var count = Math.floor(Math.random()*180);
-		console.log(lat,lng,count);
+                var count = Math.floor(Math.random()*30)+16;
                 HeatmapController.heatmapOverlay.addDataPoint(lat,lng,count);
-		
+            //HeatmapController.heatmapOverlay.heatmap.setRadius(count)
             }
 	
         });
@@ -75,11 +82,72 @@ HeatmapController={
             HeatmapController.heatmapOverlay.setDataSet(HeatmapController.testData);
         });
         /*google.maps.event.addListener(this.map, "center_changed", function(){
-            console.log('zooooooom');
+            console.log('center_changed');
         });*/
-        $('#heatmapArea').mouseup(function(){
-            console.log('UP');
+        $('#heatmapArea').mouseup(function(e){
+            
+            console.log(e);
         });
+
+        $('.fieldset').click(function(){
+            $(this).parent().toggleClass('uncollapsed');
+            $(this).find('input').val(null);
+            $(this).siblings().first().toggle('slow');
+            return false;
+        });
+
+        $('.fieldset').siblings('form').each(function(k,v){
+            $(this).attr('action',appconf.ajax_url);
+            $(this).submit(function(){
+                return AIM.submit(this, {
+                    'onStart' : function(){},
+                    'onComplete' : function(ret){
+                        var obj=eval('('+ret+')');
+                        console.log(obj);
+                    }
+                })
+            });
+
+        });
+
+        var emptyCls="empty";
+        var emptyStr="Adatsor neve";
+        var emptyController=function(){
+            if($(this).hasClass(emptyCls)){
+                $(this).removeClass(emptyCls);
+                $(this).val("");
+            }else if($(this).val().length==0){
+                $(this).addClass(emptyCls);
+                $(this).val(emptyStr);
+            }
+        };
+
+        $('[name=datasetName]').blur(emptyController).focus(emptyController).val(function(v){
+            return v==emptyStr?'':v;
+        });
+
+        $('[name=upload]').parent().submit(function(){
+            $(this).attr('action',appconf.ajax_url);
+            $(this).attr('method',"POST");
+
+            return me.isValid();
+        });
+
+        $('[name=browse]').click(function(){
+            $(this).siblings('[type=file]').click();
+        });
+
+        $('[name=upload]').click(function(){
+            $(this).parent().submit();
+        });
+    },
+    isValid:function(){
+        $('form').children('input').each(function(k,v){
+            if($(v).val().trim().length==0){
+                return false;
+            }
+        });
+        return true;
     },
     testData:{
         max: 46,

@@ -49,8 +49,8 @@ HeatmapOverlay.prototype.draw = function(){
     var topY = ne.y;
     var leftX = sw.x;
     
-    this.conf.element.style.left = leftX;
-    this.conf.element.style.top = topY;
+    this.conf.element.style.left = leftX + 'px';
+    this.conf.element.style.top = topY + 'px';
             
 	if(this.latlngs.length > 0){
 		this.heatmap.clear();
@@ -108,6 +108,10 @@ HeatmapOverlay.prototype.pixelTransform = function(p){
 	return p;
 }
 
+HeatmapOverlay.prototype.getDataSet = function(){
+    return this.heatmap.store.exportDataSet();
+}
+
 HeatmapOverlay.prototype.setDataSet = function(data){
 
 	var mapdata = {
@@ -117,6 +121,7 @@ HeatmapOverlay.prototype.setDataSet = function(data){
 	var d = data.data;
 	var dlen = d.length;
 	var projection = this.getProjection();
+	this.latlngs = [];
 	while(dlen--){	
 		var latlng = new google.maps.LatLng(d[dlen].lat, d[dlen].lng);
 		this.latlngs.push({latlng: latlng, c: d[dlen].count});
