@@ -109,11 +109,18 @@
                         if(two === undefined)
                             continue;
                         // if both indexes are defined, push the values into the array
-                        exportData.push({x: parseInt(one, 10), y: parseInt(two, 10), count: data[one][two]});
+                        exportData.push({
+                            x: parseInt(one, 10),
+                            y: parseInt(two, 10),
+                            count: data[one][two]
+                        });
                     }
                 }
                     
-                return { max: me.max, data: exportData };
+                return {
+                    max: me.max,
+                    data: exportData
+                };
             },
             generateRandomDataSet: function(points){
                 var heatmap = this.get("heatmap"),
@@ -124,7 +131,11 @@
                 randomset.max = max;
                 var data = [];
                 while(points--){
-                    data.push({x: Math.floor(Math.random()*w+1), y: Math.floor(Math.random()*h+1), count: Math.floor(Math.random()*max+1)});
+                    data.push({
+                        x: Math.floor(Math.random()*w+1),
+                        y: Math.floor(Math.random()*h+1),
+                        count: Math.floor(Math.random()*max+1)
+                    });
                 }
                 randomset.data = data;
                 this.setDataSet(randomset);
@@ -171,16 +182,17 @@
         heatmap.prototype = {
             configure: function(config){
                 var me = this;
-                if(config.radius){
-                    var rout = config.radius,
-                    rin = parseInt(rout/2, 10);                    
-                }
-                me.set("radiusIn", rin || 15),
-                me.set("radiusOut", rout || 40),
+                me.setRadius(config.radius),
                 me.set("element", (config.element instanceof Object)?config.element:document.getElementById(config.element));
                 me.set("visible", config.visible);
                 me.set("max", config.max || false);
-                me.set("gradient", config.gradient || { 0.45: "rgb(0,0,255)", 0.55: "rgb(0,255,255)", 0.65: "rgb(0,255,0)", 0.95: "yellow", 1.0: "rgb(255,0,0)"});    // default is the common blue to red gradient
+                me.set("gradient", config.gradient || {
+                    0.45: "rgb(0,0,255)",
+                    0.55: "rgb(0,255,255)",
+                    0.65: "rgb(0,255,0)",
+                    0.95: "yellow",
+                    1.0: "rgb(255,0,0)"
+                });    // default is the common blue to red gradient
                 me.set("opacity", parseInt(255/(100/config.opacity), 10) || 180);
                 me.set("width", config.width || 0);
                 me.set("height", config.height || 0);
@@ -318,8 +330,6 @@
                 var me = this,
                 r1 = me.get("radiusIn"),
                 r2 = me.get("radiusOut"),
-//                r1 = count,
-//                r2 = parseInt(count/2, 10),
                 
                 ctx = me.get("actx"),
                 max = me.get("max"),

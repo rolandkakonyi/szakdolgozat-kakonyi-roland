@@ -5,7 +5,7 @@ $dir = explode('/', $_SERVER['SCRIPT_FILENAME']);
 $root = implode('/', array_slice($dir, 0, count($dir) - 2));
 $CONF['root_path'] = $root . '/';
 
-$CONF['class_path'] = $CONF['root_path'] . 'php/class/';
+$CONF['class_path'] = $CONF['root_path'] . 'class/';
 
 function __autoload($class_name) {
     global $CONF;
@@ -20,12 +20,15 @@ function __autoload($class_name) {
     }
 }
 
-$CONF['site_url'] = 'http://' . $_SERVER['SERVER_NAME']."/";
-$CONF['ajax_url'] = $CONF['site_url'] . "php/backend.php";
+$CONF['site_url'] = 'http://' . $_SERVER['SERVER_NAME'] . "/";
+$CONF['ajax_url'] = $CONF['site_url'] . "backend.php";
 
-$CONF['flatFile_path'] = $CONF['root_path'] . "db/";
+$CONF['db_settings'] = array(
+    'type' => 'sqlite',
+    'path' => $CONF['root_path'] . "db/",
+    'filename' => 'db.data'
+);
 
 $DB = new flatFile($CONF['flatFile_path'], "db.dat");
 
-$DB->setDatas(range(1, 999),true);
 ?>

@@ -45,31 +45,39 @@ HeatmapController={
         this.heatmapOverlay = new HeatmapOverlay(this.map, {
             "radius":2,
             "visible":true, 
-            "opacity":60
+            "opacity":60,
+            "gradient":{
+                0.45: "rgb(0,0,255)",
+                0.50: "rgb(0,128,255)",
+                0.55: "rgb(0,255,255)",
+                0.60: "rgb(0,255,128)",
+                0.65: "rgb(0,255,0)",
+                0.70: "rgb(64,255,0)",
+                0.75: "rgb(128,255,0)",
+                0.95: "rgb(255,255,0)",
+                1.0: "rgb(255,0,0)"
+            }
         });
 
         $("#gen").click(function(){
             var currentBounds = HeatmapController.heatmapOverlay.map.getBounds();
             var ne = currentBounds.getNorthEast();
             var sw = currentBounds.getSouthWest();
-            var minLat=sw.Qa-50;
-            var minLng=sw.Ra-50;
-            var maxLat=ne.Qa+50;
-            var maxLng=ne.Ra+50;
 
-            //            var latOffset=180;
-            //            var lngOffset=180;
-            var latOffset=(maxLat-minLat);
-            var lngOffset=(maxLng-minLng);
             var x = 1;
             while(x--){
-		
-                var lat = Math.random()*latOffset+minLat;
-                var lng = Math.random()*lngOffset+minLng;
                 var count = Math.floor(Math.random()*30)+16;
+
+                var minLat=sw.Qa+count;
+                var minLng=sw.Ra+count;
+                var maxLat=ne.Qa-count;
+                var maxLng=ne.Ra-count;
+
+                var lat = Math.random()*(maxLat-minLat)+minLat;
+                var lng = Math.random()*(maxLng-minLng)+minLng;
+
                 HeatmapController.heatmapOverlay.addDataPoint(lat,lng,count);
             }
-	
         });
 	
         $("#tog").click(function(){

@@ -1,6 +1,6 @@
 <?php
 
-require_once 'config.php';
+require_once 'conf/config.php';
 
 //print_r($_SERVER);
 
