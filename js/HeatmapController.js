@@ -59,16 +59,15 @@ HeatmapController={
 
             //            var latOffset=180;
             //            var lngOffset=180;
-            var latOffset=(maxLat-minLat)+minLat;
-            var lngOffset=(maxLng-minLng)+minLng;
-            var x = 5;
+            var latOffset=(maxLat-minLat);
+            var lngOffset=(maxLng-minLng);
+            var x = 1;
             while(x--){
 		
-                var lat = Math.random()*latOffset;
-                var lng = Math.random()*lngOffset;
+                var lat = Math.random()*latOffset+minLat;
+                var lng = Math.random()*lngOffset+minLng;
                 var count = Math.floor(Math.random()*30)+16;
                 HeatmapController.heatmapOverlay.addDataPoint(lat,lng,count);
-            //HeatmapController.heatmapOverlay.heatmap.setRadius(count)
             }
 	
         });
@@ -98,6 +97,7 @@ HeatmapController={
 
         $('.fieldset').siblings('form').each(function(k,v){
             $(this).attr('action',appconf.ajax_url);
+            $(this).attr('method',"POST");
             $(this).submit(function(){
                 return AIM.submit(this, {
                     'onStart' : function(){},
@@ -127,10 +127,14 @@ HeatmapController={
         });
 
         $('[name=upload]').parent().submit(function(){
-            $(this).attr('action',appconf.ajax_url);
-            $(this).attr('method',"POST");
-
-            return me.isValid();
+            var error=!me.isValid();
+            if(error){
+                $.prompt('Hibásan töltötte ki az űrlapot!');
+                return false;
+            }
+            else{
+                return true;
+            }
         });
 
         $('[name=browse]').click(function(){
@@ -142,12 +146,13 @@ HeatmapController={
         });
     },
     isValid:function(){
+        var ret=true;
         $('form').children('input').each(function(k,v){
             if($(v).val().trim().length==0){
-                return false;
+                ret=false;
             }
         });
-        return true;
+        return ret;
     },
     testData:{
         max: 46,
