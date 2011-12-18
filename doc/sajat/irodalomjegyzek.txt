@@ -1,0 +1,15 @@
+
+36. JQUERY IMPROMPTU [Online] http://trentrichardson.com/Impromptu/.
+
+31. GITHUB [Online] https://github.com/. 
+32. ATLASSIAN BITBUCKET [Online] https://bitbucket.org/.
+
+28. FIREFOX ADDONS: FIREBUG [Online] https://addons.mozilla.org/hu/firefox/addon/firebug/statistics/?last=365. 
+29. LOGOUT.HU: VERZIÓKÖVETÉS [Online] http://logout.hu/cikk/verziokovetes/a_verziokovetes_lenyege.html. 
+30. GOOGLE CODE [Online] http://code.google.com/intl/hu-HU/.
+
+17. APPLICATIONS PROGRAMMING IN SMALLTALK-80: HOW TO USE MODEL-VIEW-CONTROLLER [Online] http://st-www.cs.illinois.edu/users/smarch/st-docs/mvc.html.
+
+16. WIKIPEDIA MODELL-NÉZET-VEZÉRLÕ [Online] http://hu.wikipedia.org/wiki/Modell-nézet-vezérlõ.
+
+3. INTERNET WORLD STATS [Online] [Hivatkozva: 2012. 04 25.] http://www.internetworldstats.com/eu/hu.htm.

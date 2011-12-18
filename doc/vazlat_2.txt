@@ -1,0 +1,93 @@
+
+
+-	Mikrokontrolleres adatgyûjtõbõl származó adathalmaz tárolása
+-	Adatgyûjtõ paraméterezése
+-	Mért koordinátákhoz tartozó sugárzási érték pontonkénti megjelenítése
+-	Kvázi ekvivalens pontokra görbe illesztés
+-	Az így megkapott görbék alapján súlypont (sugárzás forrása) meghatározása
+
+
+
+
+1. Feladat specifikáció
+	A szakdolgozatom célja egy olyan alkalmazás fejlesztése, amely képes feldolgozni, relációs adatbázisban tárolni és megjeleníteni mikrokontrolleres adatgyûjtõbõl származó sugárzásmérési adatokat. Ezentúl képes a korábban feldolgozott és tárolt adatokat a megjelenítéshez visszatölteni. A megjelenítést webes felületen keresztül egy térkép segítségével valósítsa meg, ezáltal platform független legyen. A feldolgozás során az alkalmazásnak képesnek kell lennie a kvázi ekvivalens pontok alapján, a sugárzás valószínûsíthetõ súlypontját, forrását meghatároznia, majd megjelölnie azt a webes felületen található térképen.
+	A szakdolgozatom másik célja a felhasznált technológiák és a fejlesztést segítõ eszközök, módszertanok bemutatása.
+
+2. Felhasznált eszközök, technológiák és fejlesztõi környezet áttekintése
+	2.1. Általánosan a fejlesztõi környezetrõl:
+	
+		- apache
+			- rövid bemutatása
+		- php
+			- rövid bemutatása
+			- nélkülözhetetlen kiterjesztések az alkalmazás mûködéséhez
+		
+		????
+		- html5
+			- canvas
+		????
+		
+		- javascript
+			- jQuery
+			- ajax
+			- fájlok feltöltése oldal újratöltés nélkül, mint probléma
+			
+		????
+		- netbeans
+			- miért?
+			- miben jobb egy egyszerû notepad-nél
+		????
+		
+	2.2 verziókövetõ rendszerek
+		- verziókövetõ rendszerek általánosan
+		- verziókövetõ rendszerek típusai
+		- verziókövetõ rendszerek fogalmai
+		- verziókövetõ rendszer kiválasztása
+		- git eszközeinek bemutatása
+			- git bash
+			- gitk
+			- git gui
+		- Verziókövetõ használata és elõnyei a szakdolgozatom fejlesztése során
+		
+3. Az alkalmazás tervezése:
+	3.1 Az adatbázis motor kiválasztása
+		- sqlite bemutatása
+		- választás indoklása
+		- SQLite manager mint, adatbázis kezelõ felület
+		
+	3.2 Kapcsolat az alkalmazás és az adatbázis között, PDO
+		- bemutatása
+		- legfontosabb metódusai
+		- miért választottam?
+		
+	3.3 Alkalmazott módszertanok:
+		- OOP röviden
+		- Magyar jelölés
+	
+4. Megvalósítás bemutatása
+	4.1 Mikrokontrolleres adatgyûjtõbõl származó adathalmaz tárolása
+		- adatbázis szerkezet
+			- E-R diagram
+			- fizikai terv
+			- táblák egyesével,
+				- oszlop,típus,hossz,tulajdonságok,null,index,autoinc
+				- create script
+			- kapcsolatok a táblák között
+		- adatbázis réteg
+		- legfontosabb metódusok
+	- Mért koordinátákhoz tartozó sugárzási érték pontonkénti megjelenítése
+		- gmaps
+		- heatmap.js
+	- Kvázi ekvivalens pontokra görbe illesztés
+		- feldolgozás????
+		- matematikai alapok
+	- Az így megkapott görbék alapján súlypont (sugárzás forrása) meghatározása
+		- lagrange????
+		- matematikai alapok
+
+4. Mûködés bemutatása teszteseteken keresztül
+	- adatok feltöltése fájlból
+	- adatok betöltése adatbázisból
+	
+5. Továbbfejlesztési lehetõségek
+	- többfelhasználósra alakításnál mysql

@@ -1,0 +1,128 @@
+body { font-family : Arial, Verdana, Geneva, Helvetica, sans-serif; }
+
+H1old {
+	Color: #002F5E;
+	text-align:center;
+}
+
+H1 {
+	Color:#990000;
+	text-align:center;
+	font-family: Arial, Helvetica, sans-serif;
+}
+
+.WhiteFont
+{
+	Color:White;
+	text-align:right;
+}
+.AlignRight
+{
+	text-align:right;
+}
+.AlignCenter
+{
+	text-align:center;
+}
+
+.leftMargin 
+{
+	margin-left: 1em;
+	margin-right: 1em;
+}
+.BlackBorders {
+	border: 1pt solid Black;
+	background-color: #F6EEDA;
+}
+
+.BlackBorders2 {
+	border: 1pt solid Black;
+}
+
+.BlackBordersA {
+	border: 1pt solid #00CCFF;
+	background-color: #F6EEDA;
+}
+
+
+.GreyBorders {
+	border: 1pt solid Black;
+	padding: 1em;
+	background-color: #CCCCCC;
+}
+.Borders2 {
+	border: 1pt solid Black;
+	padding: 1em;
+	background-color: #F6EEDA;
+}
+.Borders3 {
+	border: 1pt solid Black;
+	padding: .5em;
+	background-color: #F6EEDA;
+}
+
+.TextIndent1 {
+	margin-left: 3em;
+}
+.TextIndent2 {
+	margin-left: 2em;
+}
+
+.TextIndent3 {
+	margin-left: 5em;
+}
+
+.setBackTextColor {
+	background-color: #FFFF80;
+}
+
+.setBackTextColor2 {
+	background-color: #FFFF80;
+}
+
+.setBackTextColor3 {
+	background-color: #FF0000;
+}
+
+.pColor {
+background-color: #CCCCCC;
+}
+
+.FormButtons {
+   color:#050;
+   font-family:'trebuchet ms',helvetica,sans-serif;
+   font-size:84%;
+   font-weight:bold;
+ background-color:#fed;
+}
+
+ .submitButton {
+  background-color : #9cf;
+  color : #000;
+font-weight:bold;
+}
+
+.header {
+ 	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 8pt;
+}
+
+
+.header2 {
+ 	font-family: Arial, Helvetica, sans-serif;
+	font-size: 10pt;
+	color: #FFFFFF;
+	font-weight:bold;
+}
+
+.header3 {
+ 	font-family: Verdana, Arial, Helvetica, sans-serif;
+	font-size: 12pt;
+}
+
+.cellColour1 {
+	background-color: #F6EEDA;
+}
+
+
+

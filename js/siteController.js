@@ -1,4 +1,4 @@
-HeatmapController={
+siteController={
     init: function(){
         var me=this;
         var zoomRelativeRates={
@@ -43,7 +43,7 @@ HeatmapController={
         this.map = new google.maps.Map(document.getElementById("heatmapArea"), myOptions);
 	
         this.heatmapOverlay = new HeatmapOverlay(this.map, {
-            "radius":2,
+            "radius":12,
             "visible":true, 
             "opacity":60,
             "gradient":{
@@ -60,107 +60,231 @@ HeatmapController={
         });
 
         $("#gen").click(function(){
-            var currentBounds = HeatmapController.heatmapOverlay.map.getBounds();
-            var ne = currentBounds.getNorthEast();
-            var sw = currentBounds.getSouthWest();
-
-            var x = 1;
-            while(x--){
-                var count = Math.floor(Math.random()*30)+16;
-
-                var minLat=sw.Qa+count;
-                var minLng=sw.Ra+count;
-                var maxLat=ne.Qa-count;
-                var maxLng=ne.Ra-count;
-
-                var lat = Math.random()*(maxLat-minLat)+minLat;
-                var lng = Math.random()*(maxLng-minLng)+minLng;
-
-                HeatmapController.heatmapOverlay.addDataPoint(lat,lng,count);
-            }
+            siteController.generate(3);
         });
 	
         $("#tog").click(function(){
-            HeatmapController.heatmapOverlay.toggle();
+            siteController.heatmapOverlay.toggle();
         });
 	
         // this is important, because if you set the data set too early, the latlng/pixel projection doesn't work
         google.maps.event.addListenerOnce(this.map, "idle", function(){
-            HeatmapController.heatmapOverlay.setDataSet(HeatmapController.testData);
+            siteController.heatmapOverlay.setDataSet(siteController.testData);
         });
         /*google.maps.event.addListener(this.map, "center_changed", function(){
             console.log('center_changed');
         });*/
         $('#heatmapArea').mouseup(function(e){
-            
             console.log(e);
         });
-
-        $('.fieldset').click(function(){
-            $(this).parent().toggleClass('uncollapsed');
-            $(this).find('input').val(null);
-            $(this).siblings().first().toggle('slow');
-            return false;
+        
+        $('#upload').click(function(){
+            siteController.showUploadForm();
         });
+        
+    },
+    generate: function(x){
+        var currentBounds = siteController.heatmapOverlay.map.getBounds();
+            var ne = currentBounds.getNorthEast();
+            var sw = currentBounds.getSouthWest();
+            var minLat=sw.Xa;
+            var minLng=sw.Ya;
+            var maxLat=ne.Xa;
+            var maxLng=ne.Ya;
+            console.log(minLat,minLng,maxLat,maxLng);
+            console.log((new Date()));
 
-        $('.fieldset').siblings('form').each(function(k,v){
-            $(this).attr('action',appconf.ajax_url);
-            $(this).attr('method',"POST");
-            $(this).submit(function(){
-                return AIM.submit(this, {
-                    'onStart' : function(){},
-                    'onComplete' : function(ret){
-                        var obj=eval('('+ret+')');
-                        console.log(obj);
+            var d=[];
+            var count=0;
+            while(x--){
+                count = Math.floor(Math.random()*200)+100;
+                console.log((new Date()));
+                
+                var lat = Math.random()*(maxLat-minLat)+minLat;
+                var lng = Math.random()*(maxLng-minLng)+minLng;
+                d.push({
+                    x:lat,
+                    y:lng
+                });
+                siteController.heatmapOverlay.addDataPoint(lat,lng,count);
+            //console.log(lat,lng,count);
+            //console.log((new Date()));
+            }
+            console.log(d);
+            console.log((new Date()));
+            //siteController.stuff(d);
+            //console.log((new Date()));
+    },
+    showUploadForm: function(){
+        var uploadForm='<form id="uploadForm" action="" method="POST" enctype="multipart/form-data">'+
+        '<label for="datasetName">Adatsor neve:</label>'+
+        '<input type="hidden" name="method" value="uploadDataset"/>'+
+        '<input type="text" id="datasetName" name="datasetName" maxlength="32"/>'+
+        '<label>Írjon be egy URL-t ahol a CSV fájl található vagy a Tallóz gombbal válassza ki!</label><br />'+
+        '<label for="csvUrl">URL:</label>'+
+        '<input type="text" id="csvUrl" name="csvUrl" maxlength="128"/>'+
+        '<span class="disno">Kiválasztott fájl: <span name="filename"></span></span>'+
+        '<input class="disno" type="file" name="uploadData"/>'+
+        '<div class="clbo"></div>'+
+        '</form>';
+
+        $.prompt({
+            state0:{
+                html:uploadForm,
+                buttons:{
+                    'Mégsem':-1,
+                    'Tallóz':0,
+                    'Feltöltés':1
+                },
+                submit: function(v,m,f){
+                    switch(v){
+                        case -1:
+                            return true;
+                            break;
+                        case 0:
+                            $('#uploadForm input[type=file]').click();
+                            break;
+                        case 1:
+                        default:
+                            var errorMsg=siteController.isValid();
+                            if(errorMsg){
+                                $.prompt(errorMsg);
+                            }
+                            else{
+                                $('#uploadForm').submit();
+                                $.prompt.goToState('state1');
+                            }
                     }
-                })
-            });
-
-        });
-
-        var emptyCls="empty";
-        var emptyStr="Adatsor neve";
-        var emptyController=function(){
-            if($(this).hasClass(emptyCls)){
-                $(this).removeClass(emptyCls);
-                $(this).val("");
-            }else if($(this).val().length==0){
-                $(this).addClass(emptyCls);
-                $(this).val(emptyStr);
-            }
-        };
-
-        $('[name=datasetName]').blur(emptyController).focus(emptyController).val(function(v){
-            return v==emptyStr?'':v;
-        });
-
-        $('[name=upload]').parent().submit(function(){
-            var error=!me.isValid();
-            if(error){
-                $.prompt('Hibásan töltötte ki az űrlapot!');
-                return false;
-            }
-            else{
-                return true;
+                    return false;
+                }
+            },
+            state1:{
+                html:'<div>A feltöltés folyamatban...<br /><img src="img/ajax-loader.gif" alt="Feltöltés..."/></div>',
+                buttons:{}
+            },
+            state2:{
+                html:'<div>A feldolgozás folyamatban...<br /><img src="img/ajax-loader.gif" alt="Feldolgozás..."/></div>'
             }
         });
-
-        $('[name=browse]').click(function(){
-            $(this).siblings('[type=file]').click();
+        
+        $('#uploadForm input[type=file]').change(function(){
+            $("#uploadForm span[name=filename]").html($(this).val()).parent().fadeIn('slow');
         });
-
-        $('[name=upload]').click(function(){
-            $(this).parent().submit();
+        
+        $('#uploadForm').submit(function(){
+            $(this).attr('action',appconf.ajax_url);
+            $(this).attr('method','POST');
+            return AIM.submit(this, {
+                'onStart' : function(){},
+                'onComplete' : function(ret){
+                    var uploadObj=eval('('+ret+')');
+                    if(uploadObj.success){
+                        $.ajax({
+                            url: appconf.ajax_url,
+                            type:'POST',
+                            async: true,
+                            dataType: 'json',
+                            data: {
+                                method: 'processDataset',
+                                datasetId: uploadObj.datasetId
+                            },
+                            success:function(processRet){
+                                if(processRet.success){
+                                    $('#jqi_state_state2 .jqimessage div').hide();
+                                    $('#jqi_state_state2 .jqimessage').append('<br /><br />'+processRet.msg);
+                                    $('#jqi_state_state2 .jqibuttons').show();
+                                }
+                                else{
+                                    $.prompt.close();
+                                    $.prompt(processRet.error);
+                                }
+                            }
+                        });
+                        
+                        var uploadMsg=('$rowNum sor feldolgozva,<br />ebből $importedRowNum sor sikeresen bekerült az adatbázisba.').replace('$rowNum',uploadObj.nums.rowNum).replace('$importedRowNum',uploadObj.nums.importedRowNum);
+                        $('#jqi_state_state2 .jqimessage').prepend(uploadMsg);
+                        $('#jqi_state_state2 .jqibuttons').hide();
+                        $.prompt.goToState('state2');
+                    }
+                    else{
+                        $.prompt.close();
+                        $.prompt(uploadObj.error);
+                    }
+                }
+            })
         });
     },
     isValid:function(){
-        var ret=true;
-        $('form').children('input').each(function(k,v){
-            if($(v).val().trim().length==0){
-                ret=false;
+        var errors=['Hibásan töltötte ki az űrlapot!'];
+        if($('#uploadForm input[name=datasetName]').val().trim().length==0){
+            errors.push('Adatsor nevének megadása kötelező!');
+        }
+        if($('#uploadForm input[name=uploadData]').val().trim().length!=0){
+            errors.push('Az adatsor feltöltéséhez fájl kiválasztása kötelező!');
+        }
+        return (errors.length>1)?errors.join('<br /> - '):'';
+    },
+    
+    stuff: function(testData){
+        var data=[];
+        //        var pdata=[];
+        if(!testData){
+            testData=this.heatmapOverlay.getDataSet().data;
+        }
+        console.log(testData);
+        
+        var cent;
+        if(testData.length==1){
+            cent=testData.pop();
+        }
+        else{
+            for(var v in testData){
+                //            pdata.push(new google.maps.LatLng(testData[v].lat,testData[v].lng));
+                data.push(
+                    new Point(
+                        testData[v].x+180.0,
+                        testData[v].y+180.0
+                        )
+                    );
             }
+            console.log(data);
+
+            var c=new Contour(data);
+            console.log(c.area());
+
+            cent=c.centroid();
+            cent.x-=180;
+            cent.y-=180;
+            //var cent2=c.centroid2();
+        
+            //console.log('c2');
+            //console.log(cent2);
+        }
+        console.log(cent);
+        marker = new google.maps.Marker({
+            position: new google.maps.LatLng(cent.x,cent.y),
+            map: this.heatmapOverlay.map,
+            title:"Közép"
         });
-        return ret;
+        console.log('marker');
+        console.log(marker);
+        
+    /*
+        // Construct the polygon
+        // Note that we don't specify an array or arrays, but instead just
+        // a simple array of LatLngs in the paths property
+        var bermudaTriangle = new google.maps.Polygon({
+            paths: pdata,
+            strokeColor: "#FF0000",
+            strokeOpacity: 0.8,
+            strokeWeight: 2,
+            fillColor: "#FF0000",
+            fillOpacity: 0.35
+        });
+
+        bermudaTriangle.setMap(this.heatmapOverlay.map);
+         */
+        
     },
     testData:{
         max: 46,
