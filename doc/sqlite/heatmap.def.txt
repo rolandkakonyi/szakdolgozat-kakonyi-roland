@@ -1,6 +1,0 @@
-heatmap
-Definition
-A graphical representation of data using colors to indicate the level of activity, usually using darker colors to indicate low activity, and brighter colors to indicate high activity. For example a heatmap could indicate the number of foreclosures in a geographical area during a set period of time.
-
-
-http://www.businessdictionary.com/definition/heatmap.html

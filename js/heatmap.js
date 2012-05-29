@@ -275,7 +275,9 @@
             
                 return height;
             },
-            colorize: function(x, y){
+            colorize: function(x, y,count){
+                //az erősséghez igazítja a sugarat
+                this.setRadius(count);
                 // get the private variables
                 var me = this,
                 width = me.get("width"),
@@ -326,6 +328,8 @@
                 ctx.putImageData(image,x,y);    
             },
             drawAlpha: function(x, y, count){
+                //az erősséghez igazítja a sugarat
+                this.setRadius(count);
                 // storing the variables because they will be often used
                 var me = this,
                 r1 = me.get("radiusIn"),
@@ -344,7 +348,7 @@
                 ctx.fillStyle = rgr;  
                 ctx.fillRect(xb,yb,mul,mul);
                 // finally colorize the area
-                me.colorize(xb,yb);
+                me.colorize(xb,yb,count);
             },
             toggleDisplay: function(){
                 var me = this,

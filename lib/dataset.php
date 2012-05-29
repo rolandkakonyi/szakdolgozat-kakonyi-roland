@@ -28,7 +28,7 @@ class dataset {
 		catch (PDOException $e) {
 			die(json_encode(array('success' => false, 'error' => 'Adatbázis hiba!', 'debugMessage' => $e->getMessage())));
 		}
-		return $this->to_db_table($sSource_file);
+		return $this->_savePoints($sSource_file);
 	}
 
 	public function process() {
@@ -106,7 +106,7 @@ class dataset {
 		return array('success' => true, 'dataset' => $aDataset, 'points' => $aPoints);
 	}
 
-	protected function to_db_table($sSource_file, $sDelimiter = ",", $iMax_line_length = 70, $sEnclosure = '"') {
+	protected function _savePoints($sSource_file, $sDelimiter = ",", $iMax_line_length = 70, $sEnclosure = '"') {
 		if (($handle = fopen($sSource_file, "r")) !== FALSE) {
 			try {
 				$sQuery = "
