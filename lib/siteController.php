@@ -72,6 +72,36 @@ class siteController {
 		}
 	}
 
+	protected static function generateParam($aRequest) {
+		global $CONF;
+		$aValues = $aRequest['values'];
+		foreach ($aValues as &$val) {
+			$val = str_replace(',', '.', $val);
+		}
+
+		$sCsvFileName = $CONF['var_path'] . "parameterek.csv";
+		@unlink($sCsvFileName);
+		$handle = fopen($sCsvFileName, 'w');
+		fputcsv($handle, array_keys($aValues));
+		fputcsv($handle, array_values($aValues));
+		fclose($handle);
+
+		$sUrl = $CONF['ajax_url'] . "?method=getParamFile";
+		die(json_encode(array('success' => true, 'url' => $sUrl)));
+	}
+
+	protected static function getParamFile($aRequest) {
+		global $CONF;
+		$sCsvFileName = $CONF['var_path'] . "parameterek.csv";
+		header('Content-type: text/csv');
+		header("Content-Disposition: attachment; filename=parameterek.csv");
+		header("Pragma: no-cache");
+		header("Expires: 0");
+		header('Content-length: ' . filesize($sCsvFileName));
+		echo file_get_contents($sCsvFileName);
+		exit();
+	}
+
 }
 
 ?>

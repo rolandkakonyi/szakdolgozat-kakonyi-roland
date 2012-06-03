@@ -15,6 +15,7 @@ $root = implode('/', array_slice($dir, 0, count($dir) - 1));
 $CONF['root_path'] = $root . '/';
 
 $CONF['lib_path'] = $CONF['root_path'] . 'lib/';
+$CONF['var_path']=$CONF['root_path'].'var/';
 
 function __autoload($class_name) {
     global $CONF;

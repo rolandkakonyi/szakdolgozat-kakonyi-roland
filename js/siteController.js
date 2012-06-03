@@ -13,21 +13,16 @@ var siteController={
 			me.heatmapOverlay.toggle();
 		});
 	
-		// this is important, because if you set the data set too early, the latlng/pixel projection doesn't work
-		//google.maps.event.addListenerOnce(this.map, "idle", function(){
-			//me.heatmapOverlay.setDataSet(siteController.testData);
-//			});
-		
-//		google.maps.event.addListener(this.map, "center_changed", function(){
-//			console.log('center_changed');
-		//});
-        
 		$('#upload').click(function(){
 			me.showUploadForm();
 		});
 		
 		$('#load').click(function(){
 			me.showDatasetListWindow();
+		});
+
+		$('#param').click(function(){
+			me.showParamGenWindow();
 		});
         
 	},
@@ -67,9 +62,74 @@ var siteController={
 			}
 		});
 	},
+	showParamGenWindow: function(){
+		var paramForm='<div class="paramForm"><h2>Paraméterfájl generálás</h2>'+
+		'<label for="samplingTime" class="left">Mintavételezési idő:</label>'+
+		'<input class="left" type="text" id="samplingTime" name="samplingTime" value="1,00"/><span class="left">mp</span>'+
+		'<div class="clbo"></div></div>';
+
+		var pr=$.prompt(paramForm,{
+			buttons:{
+				'Mégsem': false,
+				'Generál': true
+			},
+			loaded: function(){
+				$("#samplingTime").numeric({
+					decimal : "," , 
+					negative : false
+				});
+			},
+			submit: function(v){
+				if(v){
+					var hasblanks=false;
+					var values={};
+					$.each($('div.jqimessage input'),function(k,val){
+						if(!$(val).val()){
+							hasblanks=true;
+							return;
+						}
+						else{
+							values[$(val).attr('name')]=$(val).val();
+						}
+					});
+					if(hasblanks){
+						$.prompt('Hibás űrlap kitöltés!');
+						return false;
+					}
+					
+					$.ajax({
+						url: appconf.ajax_url,
+						type:'POST',
+						async: true,
+						cache: false,
+						dataType: 'json',
+						data: {
+							method: 'generateParam',
+							values: values
+						},
+						success:function(processRet){
+							if(processRet.success){
+								pr.remove();
+								window.location.href=processRet.url;
+							}
+							else{
+								$.prompt('Sikertelen paraméterfájl generálás!');
+							}
+						}
+					});
+					return false;
+				}
+				else{
+					return true;
+				}
+				
+			}
+		});
+	},
 	showDatasetListWindow:function(){
-		var listHtml='<div id="listWrapper"><img class="loader" src="img/ajax-loader.gif"  alt="Töltés..."/><table id="list"></table></div>';
+		var listHtml='<h2>Adatok betöltése</h2><div id="listWrapper"><img class="loader" src="img/ajax-loader.gif"  alt="Töltés..."/><table id="list"></table></div>';
 		$.prompt(listHtml,{
+			classes:'wide',
 			buttons:{
 				'Bezárás':false
 			}
@@ -110,7 +170,7 @@ var siteController={
 			type:'POST',
 			async: true,
 			cache: false,
-			dataType: 'jsonp',
+			dataType: 'json',
 			data: {
 				method: 'getDatasetList',
 				page: page
@@ -119,13 +179,14 @@ var siteController={
 				$('#listWrapper .loader').hide();
 				if(processRet.success){
 					var data=processRet.datasets;
-					var html='<tr><th>Azon.</th><th>Név</th><th>Létrehozva</th><th class="noborder">Pontok száma</th></tr>';
+					var html='<tr><th>Azon.</th><th>Név</th><th>Létrehozva</th><th>Pontok száma</th><th class="noborder"></th></tr>';
 					for(var i=0;i<data.length;i++){
 						html+='<tr class="row'+(data.length-1==i?' noborder':'')+'">';
 						html+='<td>'+data[i].id+'</td>';
 						html+='<td>'+data[i].name+'</td>';
 						html+='<td>'+data[i].creation_date+'</td>';
-						html+='<td class="noborder">'+data[i].count+'</td>';
+						html+='<td>'+data[i].count+'</td>';
+						html+='<td class="noborder button"><span onclick="siteController.getDataset('+data[i].id+');return false;">Betöltés</span></td>';
 						html+='</tr>';
 					}
 					$('#listWrapper #list').html(html);
@@ -135,11 +196,14 @@ var siteController={
 				}
 				$('#listWrapper #list').show();
 			}
-		});
+		}).error(function(){
+			console.log('error')
+			});
 		return true;
 	},
 	showUploadForm: function(){
 		var uploadForm='<form id="uploadForm" action="" method="POST" enctype="multipart/form-data">'+
+		'<h2>Adatok feltöltése</h2>'+
 		'<label for="datasetName">Adatsor neve:</label>'+
 		'<input type="hidden" name="method" value="uploadDataset"/>'+
 		'<input type="text" id="datasetName" name="datasetName" maxlength="32"/>'+
@@ -246,6 +310,15 @@ var siteController={
 		}
 		return (errors.length>1)?errors.join('<br /> - '):'';
 	},
+	redraw: function(){
+		siteController.heatmapOverlay.setDataSet(siteController.heatmapOverlay.getDataSet());
+	},
+	/*
+	 * a megadott értékek adják a dél-nyugati és az észak-keleti határokat 
+	 *
+	var bounds=new google.maps.LatLngBounds(new google.maps.LatLng(40.111689, -113.913575),new google.maps.LatLng(40.5207,-91.325684));
+siteController.heatmapOverlay.map.fitBounds(bounds);
+	 */
 	generate: function(x,offset){
 		offset=offset?offset:0.001;
 		var currentBounds = siteController.heatmapOverlay.map.getBounds();
@@ -259,7 +332,7 @@ var siteController={
 		var d=[];
 		var count=0;
 		while(x-->0){
-			count = Math.floor(Math.random()*200)+100;
+			count = Math.floor(Math.random()*70)+20;
                 
 			var lat = Math.random()*(maxLat-minLat)+minLat;
 			var lng = Math.random()*(maxLng-minLng)+minLng;
@@ -268,12 +341,12 @@ var siteController={
 				y:lng
 			});
 			siteController.heatmapOverlay.addDataPoint(lat,lng,count);
-			
+		/*
 			var marker = new google.maps.Marker({
 				position: new google.maps.LatLng(lat,lng),
 				map: this.heatmapOverlay.map,
 				title:count+""
-			});			
+			});			*/
 		//console.log(lat,lng,count);
 		//console.log((new Date()));
 		}
@@ -291,13 +364,17 @@ var siteController={
 		var maxLat=ne.lat()-offset;
 		var maxLng=ne.lng()-offset;		
 		var data=siteController.heatmapOverlay.getDataSet().data;
-		conslole.log(data);
+		console.log(data);
 		var visiblePoints=[];
-		for(p in data){
+		for(var p in data){
+			console.log(p);
 			if(p.x<minLat || p.y<minLng || p.y>maxLng || p.x>maxLat){
 				continue;
 			}
-			visiblePoints.push({x:p.x,y:p.y});
+			visiblePoints.push({
+				x:p.x,
+				y:p.y
+			});
 		}
 		return visiblePoints;
 	},

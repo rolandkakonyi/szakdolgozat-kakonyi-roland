@@ -102,7 +102,12 @@ div.jqimessage{
 #listWrapper #list tr.row:hover{
 	background-color: #ccc;
 	color: #fff;
+	border-color: #fff;
 }
+#listWrapper #list tr.row:hover td{
+	border-color: #fff;
+}
+
 #listWrapper #list tr{
 	border-bottom:#ccc solid 1px;
 }
@@ -116,4 +121,51 @@ div.jqimessage{
 #listWrapper #list td.noborder, #listWrapper #list th.noborder{
 	border: none;
 }
+#listWrapper #list td.button{
+	padding: 6px 4px;
+	width: 74px;
+}
+#listWrapper #list td.button span{
+	background-color: #ccc;
+	color: #555;
+    padding:4px 8px;
+    -moz-border-radius:7px;
+    -o-border-radius:7px;
+    -webkit-border-radius:7px;
+    border-radius:7px;
+    border:2px solid #ccc;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+	cursor: pointer;
+}
 
+#listWrapper #list tr.row:hover td.button span{
+	background-color: #fff;
+	color: #00a;
+}
+
+.paramForm input{
+	width: 80px;
+	margin-left: 10px;
+	text-align: right;
+}
+
+.paramForm span{
+	padding-left: 5px;
+}
+
+.wide div.jqi{
+	width: 600px !important;
+}
+
+#listWrapper #list{
+	width: 560px;
+}
+
+div.jqimessage h2{
+	font-size: 14px;
+	margin-bottom: 15px;
+}

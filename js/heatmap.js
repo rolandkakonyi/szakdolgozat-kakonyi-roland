@@ -277,7 +277,7 @@
             },
             colorize: function(x, y,count){
                 //az erősséghez igazítja a sugarat
-                this.setRadius(count);
+                //this.setRadius(count);
                 // get the private variables
                 var me = this,
                 width = me.get("width"),
@@ -329,7 +329,7 @@
             },
             drawAlpha: function(x, y, count){
                 //az erősséghez igazítja a sugarat
-                this.setRadius(count);
+                ///this.setRadius(count);
                 // storing the variables because they will be often used
                 var me = this,
                 r1 = me.get("radiusIn"),

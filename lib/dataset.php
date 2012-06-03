@@ -63,7 +63,7 @@ class dataset {
 			$iCount = intval($oSth->fetchColumn(0));
 			if ($iCount) {
 				$iOffset = intval(($iPage - 1) * 10);
-				$oSth = Db::getInstance()->query('SELECT d.id as id,d.name as name,d.creation_date as creation_date,count(p.id) as count FROM datasets d JOIN points p ON d.id=p.dataset_id GROUP BY d.id ORDER BY creation_date DESC LIMIT 10 OFFSET ' . $iOffset);
+				$oSth = Db::getInstance()->query("SELECT d.id as id,d.name as name,strftime('%Y. %m. %d. %H:%M:%S',d.creation_date) as creation_date,count(p.id) as count FROM datasets d JOIN points p ON d.id=p.dataset_id GROUP BY d.id ORDER BY creation_date DESC LIMIT 10 OFFSET " . $iOffset);
 				$oSth->execute();
 				$aDatasets = $oSth->fetchAll(PDO::FETCH_ASSOC);
 			}
