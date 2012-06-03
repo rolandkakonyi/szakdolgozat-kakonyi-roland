@@ -98,7 +98,7 @@ class siteController {
 		header("Pragma: no-cache");
 		header("Expires: 0");
 		header('Content-length: ' . filesize($sCsvFileName));
-		echo file_get_contents($sCsvFileName);
+		readfile($sCsvFileName);
 		exit();
 	}
 

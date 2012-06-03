@@ -169,3 +169,17 @@ div.jqimessage h2{
 	font-size: 14px;
 	margin-bottom: 15px;
 }
+div.jqimessage input.number{
+	width: 50px;
+	text-align: right;
+	margin-left: 10px;
+}
+
+.loadedDataset{
+	display: none;	
+	font-weight: bold;
+}
+
+.loadedDataset span{
+	font-weight: normal;
+}
